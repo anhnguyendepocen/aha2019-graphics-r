@@ -1,5 +1,5 @@
 ---
-title: "Class 03: Grammar of Graphics"
+title: "Graphics in R —-- I"
 author: "Taylor Arnold"
 output: html_notebook
 ---
@@ -11,6 +11,17 @@ output: html_notebook
 library(readr)
 library(ggplot2)
 library(dplyr)
+{% endhighlight %}
+
+
+
+{% highlight text %}
+## Warning: package 'dplyr' was built under R version 3.5.1
+{% endhighlight %}
+
+
+
+{% highlight r %}
 library(viridis)
 {% endhighlight %}
 
@@ -69,7 +80,7 @@ if you would ever like to thumb through them.
 Making visually pleasing graphics is important. Our focus
 today, however, is on understanding and theorizing exactly
 how graphics encode knowledge about data. The history of
-this begins, at least to me, with the work of Jacques Bertin
+this begins, at least to us, with the work of Jacques Bertin
 (1918-2010), a cartographer and philosopher by training.
 In his 1967 work *Semiologie Graphique* he argued that:
 
@@ -180,19 +191,19 @@ mpg
 
 {% highlight text %}
 ## # A tibble: 234 x 11
-##    manufacturer      model displ  year   cyl      trans   drv   cty   hwy
-##           <chr>      <chr> <dbl> <int> <int>      <chr> <chr> <int> <int>
-##  1         audi         a4   1.8  1999     4   auto(l5)     f    18    29
-##  2         audi         a4   1.8  1999     4 manual(m5)     f    21    29
-##  3         audi         a4   2.0  2008     4 manual(m6)     f    20    31
-##  4         audi         a4   2.0  2008     4   auto(av)     f    21    30
-##  5         audi         a4   2.8  1999     6   auto(l5)     f    16    26
-##  6         audi         a4   2.8  1999     6 manual(m5)     f    18    26
-##  7         audi         a4   3.1  2008     6   auto(av)     f    18    27
-##  8         audi a4 quattro   1.8  1999     4 manual(m5)     4    18    26
-##  9         audi a4 quattro   1.8  1999     4   auto(l5)     4    16    25
-## 10         audi a4 quattro   2.0  2008     4 manual(m6)     4    20    28
-## # ... with 224 more rows, and 2 more variables: fl <chr>, class <chr>
+##    manufacturer model    displ  year   cyl trans   drv     cty   hwy fl   
+##    <chr>        <chr>    <dbl> <int> <int> <chr>   <chr> <int> <int> <chr>
+##  1 audi         a4         1.8  1999     4 auto(l… f        18    29 p    
+##  2 audi         a4         1.8  1999     4 manual… f        21    29 p    
+##  3 audi         a4         2    2008     4 manual… f        20    31 p    
+##  4 audi         a4         2    2008     4 auto(a… f        21    30 p    
+##  5 audi         a4         2.8  1999     6 auto(l… f        16    26 p    
+##  6 audi         a4         2.8  1999     6 manual… f        18    26 p    
+##  7 audi         a4         3.1  2008     6 auto(a… f        18    27 p    
+##  8 audi         a4 quat…   1.8  1999     4 manual… 4        18    26 p    
+##  9 audi         a4 quat…   1.8  1999     4 auto(l… 4        16    25 p    
+## 10 audi         a4 quat…   2    2008     4 manual… 4        20    28 p    
+## # ... with 224 more rows, and 1 more variable: class <chr>
 {% endhighlight %}
 
 You can see the dataset in RStudio as a table by clicking
@@ -209,7 +220,7 @@ ggplot() +
   geom_point(data = mpg, mapping = aes(x = displ, y = hwy))
 {% endhighlight %}
 
-<img src="../assets/2017-09-05-class03/unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="100%" />
+<img src="../assets/graphics01/unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="100%" />
 
 In ggplot, we use the `+` sign to (literally) add together
 layers to create a plot. We can associate to each layer a
@@ -229,7 +240,7 @@ ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
   geom_point()
 {% endhighlight %}
 
-<img src="../assets/2017-09-05-class03/unnamed-chunk-4-1.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" width="100%" />
+<img src="../assets/graphics01/unnamed-chunk-4-1.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" width="100%" />
 
 Also, we can omit the explicit function input names as it
 is assumed that the first input to `ggplot` is the dataset
@@ -244,7 +255,7 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_point()
 {% endhighlight %}
 
-<img src="../assets/2017-09-05-class03/unnamed-chunk-5-1.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" width="100%" />
+<img src="../assets/graphics01/unnamed-chunk-5-1.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" width="100%" />
 
 In the following sections we will see how to modify and build
 on this basic structure to create more complex graphics.
@@ -265,7 +276,7 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_line()
 {% endhighlight %}
 
-<img src="../assets/2017-09-05-class03/unnamed-chunk-6-1.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" width="100%" />
+<img src="../assets/graphics01/unnamed-chunk-6-1.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" width="100%" />
 
 If we wanted both the lines and the points, we simply add the
 layers together:
@@ -277,7 +288,7 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_line()
 {% endhighlight %}
 
-<img src="../assets/2017-09-05-class03/unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" width="100%" />
+<img src="../assets/graphics01/unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" width="100%" />
 
 At this point it is easy to forget what is actually going on
 under the hood of **ggplot2** via inheritance and implied
@@ -290,7 +301,7 @@ ggplot() +
   geom_line(data = mpg, mapping = aes(x = displ, y = hwy))
 {% endhighlight %}
 
-<img src="../assets/2017-09-05-class03/unnamed-chunk-8-1.png" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" width="100%" />
+<img src="../assets/graphics01/unnamed-chunk-8-1.png" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" width="100%" />
 
 The package is smart, but we don't want it to be smarter
 than us!
@@ -305,7 +316,7 @@ ggplot(mpg, aes(class)) +
   geom_bar()
 {% endhighlight %}
 
-<img src="../assets/2017-09-05-class03/unnamed-chunk-9-1.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" width="100%" />
+<img src="../assets/graphics01/unnamed-chunk-9-1.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" width="100%" />
 
 Some other geometries you may find useful:
 
@@ -345,7 +356,7 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_point(aes(color = class))
 {% endhighlight %}
 
-<img src="../assets/2017-09-05-class03/unnamed-chunk-10-1.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" width="100%" />
+<img src="../assets/graphics01/unnamed-chunk-10-1.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" width="100%" />
 
 This plot begins to show the power of **ggplot2** by showing
 how easily we can add information to a visualization with
@@ -365,7 +376,7 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_point(alpha = 0.2, color = "yellow", size = 10)
 {% endhighlight %}
 
-<img src="../assets/2017-09-05-class03/unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" width="100%" />
+<img src="../assets/graphics01/unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" width="100%" />
 
 Of course, we can mix these two together:
 
@@ -375,7 +386,7 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_point(aes(color = class), alpha = 0.2, size = 10)
 {% endhighlight %}
 
-<img src="../assets/2017-09-05-class03/unnamed-chunk-12-1.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" width="100%" />
+<img src="../assets/graphics01/unnamed-chunk-12-1.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" width="100%" />
 
 Notice that if you add a `geom_line` layer to this plot,
 the color, size, and alpha parameters will not pass through
@@ -398,7 +409,7 @@ ggplot(mpg, aes(displ, hwy)) +
   labs(color = "Car Class")
 {% endhighlight %}
 
-<img src="../assets/2017-09-05-class03/unnamed-chunk-13-1.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" width="100%" />
+<img src="../assets/graphics01/unnamed-chunk-13-1.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" width="100%" />
 
 Look back the prior plots to see that these were added
 automatically. Of course, you can add whatever subset of
@@ -418,7 +429,7 @@ ggplot(mpg, aes(displ, hwy)) +
   theme_minimal()
 {% endhighlight %}
 
-<img src="../assets/2017-09-05-class03/unnamed-chunk-14-1.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" width="100%" />
+<img src="../assets/graphics01/unnamed-chunk-14-1.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" width="100%" />
 
 I find this much cleaner than the out-of-the-box theme.
 Amongst other benefits, it saves a lot on ink when trying
@@ -435,4 +446,4 @@ be very helpful as a reference):
 - [ggplot2 aesthetic vignette](https://cran.r-project.org/web/packages/ggplot2/vignettes/ggplot2-specs.html)
 - R help pages: type something like `?geom_point` for help
 
-Of course, you can also ask me any questions you may have!
+Of course, you can also ask us any questions you may have!

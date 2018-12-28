@@ -1,5 +1,5 @@
 ---
-title: "Class 04: More Layers and Interactive Graphics"
+title: "Graphics in R —-- II"
 author: "Taylor Arnold"
 output: html_notebook
 ---
@@ -11,6 +11,17 @@ output: html_notebook
 library(readr)
 library(ggplot2)
 library(dplyr)
+{% endhighlight %}
+
+
+
+{% highlight text %}
+## Warning: package 'dplyr' was built under R version 3.5.1
+{% endhighlight %}
+
+
+
+{% highlight r %}
 library(viridis)
 {% endhighlight %}
 
@@ -35,7 +46,7 @@ ggplot(mpg, aes(displ, cty)) +
   geom_point()
 {% endhighlight %}
 
-<img src="../assets/2017-09-07-class04/unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="100%" />
+<img src="../assets/graphics02/unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="100%" />
 
 Most confusion, though I think nearly everyone figured
 it out by the end of class, came from the difference between
@@ -57,7 +68,7 @@ ggplot(mpg, aes(displ, cty)) +
   geom_point(aes(color = class), size = 5)
 {% endhighlight %}
 
-<img src="../assets/2017-09-07-class04/unnamed-chunk-4-1.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" width="100%" />
+<img src="../assets/graphics02/unnamed-chunk-4-1.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" width="100%" />
 
 Here is a variable size and a fixed color:
 
@@ -67,7 +78,7 @@ ggplot(mpg, aes(displ, cty)) +
   geom_point(aes(size = hwy), color = "salmon")
 {% endhighlight %}
 
-<img src="../assets/2017-09-07-class04/unnamed-chunk-5-1.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" width="100%" />
+<img src="../assets/graphics02/unnamed-chunk-5-1.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" width="100%" />
 
 And here is a plot with fixed size and fixed color:
 
@@ -77,7 +88,7 @@ ggplot(mpg, aes(displ, cty)) +
   geom_point(size = 5, color = "salmon")
 {% endhighlight %}
 
-<img src="../assets/2017-09-07-class04/unnamed-chunk-6-1.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" width="100%" />
+<img src="../assets/graphics02/unnamed-chunk-6-1.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" width="100%" />
 
 Finally, recall that we are using inheritance from the
 `ggplot` function to assign the same dataset, x and
@@ -92,7 +103,7 @@ ggplot(mpg, aes(displ, cty)) +
   geom_point(aes(y = hwy), color = "red")
 {% endhighlight %}
 
-<img src="../assets/2017-09-07-class04/unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" width="100%" />
+<img src="../assets/graphics02/unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" width="100%" />
 
 Notice that in this example we still have to hold by the
 rules for aesthetic mappings. In the second call to
@@ -107,7 +118,6 @@ Last time we introduced a brief history of the theory of graphics
 and developed the concepts and syntax behind building graphics in
 R with the **ggplot2** package. Today we will continue this by
 looking at the remaining layer types within the Grammar of Graphics.
-
 
 ### Scales
 
@@ -128,7 +138,7 @@ ggplot(mpg, aes(displ, hwy)) +
   scale_x_continuous(limits = c(0, 7.5))
 {% endhighlight %}
 
-<img src="../assets/2017-09-07-class04/unnamed-chunk-8-1.png" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" width="100%" />
+<img src="../assets/graphics02/unnamed-chunk-8-1.png" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" width="100%" />
 
 There are also alternative scales for the x and y coordinates,
 such as `scale_x_log10` and `scale_x_sqrt`.
@@ -144,13 +154,13 @@ ggplot(mpg, aes(displ, hwy)) +
   scale_color_viridis()
 {% endhighlight %}
 
-<img src="../assets/2017-09-07-class04/unnamed-chunk-9-1.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" width="100%" />
+<img src="../assets/graphics02/unnamed-chunk-9-1.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" width="100%" />
 
 The viridis package is particularly useful when producing
 plots for overhead projectors, plots that may need to printed,
 or plots that are color-blind friendly.
 
-### facets
+### Facets
 
 Facets are a graphics layer that allow us to produce a number
 of smaller visualizations based on the unique values of one or
@@ -165,7 +175,7 @@ ggplot(mpg, aes(displ, hwy)) +
   facet_wrap(~class)
 {% endhighlight %}
 
-<img src="../assets/2017-09-07-class04/unnamed-chunk-10-1.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" width="100%" />
+<img src="../assets/graphics02/unnamed-chunk-10-1.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" width="100%" />
 
 And the grid variant takes two variables:
 
@@ -176,7 +186,7 @@ ggplot(mpg, aes(displ, hwy)) +
   facet_grid(drv~class)
 {% endhighlight %}
 
-<img src="../assets/2017-09-07-class04/unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" width="100%" />
+<img src="../assets/graphics02/unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" width="100%" />
 
 I suggest taking a look at the help pages to see how the
 `scales` option modifies these plots; it determines whether
@@ -201,7 +211,7 @@ ggplot() +
   scale_y_continuous(limit = c(0, 50))
 {% endhighlight %}
 
-<img src="../assets/2017-09-07-class04/unnamed-chunk-12-1.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" width="100%" />
+<img src="../assets/graphics02/unnamed-chunk-12-1.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" width="100%" />
 
 Here I added them to a blank plot but you can add any of these
 elements to a plot with other data points.
@@ -217,7 +227,7 @@ ggplot() +
   scale_y_continuous(limit = c(0, 1))
 {% endhighlight %}
 
-<img src="../assets/2017-09-07-class04/unnamed-chunk-13-1.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" width="100%" />
+<img src="../assets/graphics02/unnamed-chunk-13-1.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" width="100%" />
 
 Again, these can be added to a plot with data elements as
 well. You can also specify the color, size, and other
@@ -245,7 +255,7 @@ ggplot(mpg, aes(class, hwy)) +
   coord_flip()
 {% endhighlight %}
 
-<img src="../assets/2017-09-07-class04/unnamed-chunk-14-1.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" width="100%" />
+<img src="../assets/graphics02/unnamed-chunk-14-1.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" width="100%" />
 
 Summary statistics are used internally by plots such as the
 histogram and box plot (notice that their y axis is a variable
@@ -304,9 +314,9 @@ ggplotly()
 
 If you are in RStudio, the interactive plot should show up in
 the lower right hand corner. If calling R elsewhere, it should
-open a browser window.
+open ion a browser window.
 
-### tooltip
+### Tooltip
 
 By default, **plotly** includes any variables used for the
 plot in the tooltip (the box that comes up when you hover
