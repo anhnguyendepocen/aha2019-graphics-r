@@ -1,12 +1,12 @@
 ---
-title: "Class 03: Grammar of Graphics"
+title: "Graphics in R —-- I"
 author: "Taylor Arnold"
 output: html_notebook
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(eval = TRUE)
-knitr::opts_chunk$set(fig.path = "../assets/2017-09-05-class03/")
+knitr::opts_chunk$set(fig.path = "../assets/graphics01/")
 knitr::opts_chunk$set(fig.height = 5)
 knitr::opts_chunk$set(fig.width = 8.5)
 knitr::opts_chunk$set(out.width = "100%")
@@ -75,7 +75,7 @@ if you would ever like to thumb through them.
 Making visually pleasing graphics is important. Our focus
 today, however, is on understanding and theorizing exactly
 how graphics encode knowledge about data. The history of
-this begins, at least to me, with the work of Jacques Bertin
+this begins, at least to us, with the work of Jacques Bertin
 (1918-2010), a cartographer and philosopher by training.
 In his 1967 work *Semiologie Graphique* he argued that:
 
@@ -361,4 +361,4 @@ be very helpful as a reference):
 - [ggplot2 aesthetic vignette](https://cran.r-project.org/web/packages/ggplot2/vignettes/ggplot2-specs.html)
 - R help pages: type something like `?geom_point` for help
 
-Of course, you can also ask me any questions you may have!
+Of course, you can also ask us any questions you may have!

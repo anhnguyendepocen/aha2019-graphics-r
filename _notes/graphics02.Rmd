@@ -1,12 +1,12 @@
 ---
-title: "Class 04: More Layers and Interactive Graphics"
+title: "Graphics in R —-- II"
 author: "Taylor Arnold"
 output: html_notebook
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(eval = TRUE)
-knitr::opts_chunk$set(fig.path = "../assets/2017-09-07-class04/")
+knitr::opts_chunk$set(fig.path = "../assets/graphics02/")
 knitr::opts_chunk$set(fig.height = 5)
 knitr::opts_chunk$set(fig.width = 8.5)
 knitr::opts_chunk$set(out.width = "100%")
@@ -98,7 +98,6 @@ and developed the concepts and syntax behind building graphics in
 R with the **ggplot2** package. Today we will continue this by
 looking at the remaining layer types within the Grammar of Graphics.
 
-
 ### Scales
 
 Recall that some layers, such as labels and themes, have
@@ -134,7 +133,7 @@ The viridis package is particularly useful when producing
 plots for overhead projectors, plots that may need to printed,
 or plots that are color-blind friendly.
 
-### facets
+### Facets
 
 Facets are a graphics layer that allow us to produce a number
 of smaller visualizations based on the unique values of one or
@@ -271,9 +270,9 @@ ggplotly()
 
 If you are in RStudio, the interactive plot should show up in
 the lower right hand corner. If calling R elsewhere, it should
-open a browser window.
+open ion a browser window.
 
-### tooltip
+### Tooltip
 
 By default, **plotly** includes any variables used for the
 plot in the tooltip (the box that comes up when you hover
