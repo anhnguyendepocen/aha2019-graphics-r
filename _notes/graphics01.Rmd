@@ -272,7 +272,7 @@ Or, use `geom_hist` to build a histogram of a continuous variable:
 
 ```{r}
 ggplot(gapminder_2007, aes(gdp_per_cap)) +
-  geom_bar()
+  geom_histogram()
 ```
 
 ## Data Aesthetics
