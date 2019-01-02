@@ -18,75 +18,9 @@ library(readr)
 library(ggplot2)
 library(dplyr)
 library(viridis)
+
+gapminder_2007 <- read_csv("https://statsmaths.github.io/stat_data/gapminder_2007.csv")
 ```
-
-## Aesthetics: A brief review
-
-We will once again work with the `mpg` dataset for
-today's notes:
-
-```{r, message = FALSE}
-mpg <- read_csv("https://statsmaths.github.io/stat_data/mpg.csv")
-```
-
-As a review, here is:
-
-```{r}
-ggplot(mpg, aes(displ, cty)) +
-  geom_point()
-```
-
-Most confusion, though I think nearly everyone figured
-it out by the end of class, came from the difference between
-assigning aesthetics to a fixed value versus a variable
-in the dataset. These need a different syntax and doing
-it incorrectly produces very unhelpful error messages or
-(even worse) silently ignores your request.
-
-In short, to assign a variable to an aesthetic value,
-always put it inside of the `aes` function and include
-it as the first set of inputs to the geometry. Fixed
-values go after the variable values and must be outside
-of the `aes` function. Here is a plot with a variable
-color but a fixed size:
-
-```{r}
-ggplot(mpg, aes(displ, cty)) +
-  geom_point(aes(color = class), size = 5)
-```
-
-Here is a variable size and a fixed color:
-
-```{r}
-ggplot(mpg, aes(displ, cty)) +
-  geom_point(aes(size = hwy), color = "salmon")
-```
-
-And here is a plot with fixed size and fixed color:
-
-```{r}
-ggplot(mpg, aes(displ, cty)) +
-  geom_point(size = 5, color = "salmon")
-```
-
-Finally, recall that we are using inheritance from the
-`ggplot` function to assign the same dataset, x and
-(if needed) y aesthetics to each layer. We can modify
-any of these if needed. For example, here I add both
-the city and highway miles per gallon to the same plot:
-
-```{r}
-ggplot(mpg, aes(displ, cty)) +
-  geom_point() +
-  geom_point(aes(y = hwy), color = "red")
-```
-
-Notice that in this example we still have to hold by the
-rules for aesthetic mappings. In the second call to
-`geom_point`, y is mapped to a variable (`hwy`) and
-therefore goes first and inside of `aes`. The color
-is a fixed value and therefore goes outside of `aes`
-and follows it.
 
 ## More Graphics Layers
 
@@ -95,11 +29,44 @@ and developed the concepts and syntax behind building graphics in
 R with the **ggplot2** package. Today we will continue this by
 looking at the remaining layer types within the Grammar of Graphics.
 
+
+### Labels
+
+We can add labels to the plot by adding new layers to the plot:
+
+- `xlab("text for the x-axis")`
+- `ylab("text for the y-axis")`
+- `ggtitle("text for the title/top of the plot")`
+- `labs(size = "label for the size legend")`
+
+Let's add these to the current plot:
+
+```{r, message = FALSE}
+ggplot(data=gapminder_2007, aes(x=gdp_per_cap, y=life_exp)) +
+  geom_point(aes(size=pop)) +
+  xlab("Gross domestic product per capita (USD)") +
+  ylab("Life expectancy at birth (years)") +
+  labs(size = "Population") +
+  ggtitle("Macroeconomic variables by country (2007)")
+```
+
+Do not feel that you need to add complex labels to plots as we are doing
+an exploratory analysis. However, when presenting plots in a report these
+should certainly be used to clarify the plot to the audience or readers.
+
+### Themes
+
+Another type of layer with a default value is the theme layer. These describe all of the non-data oriented visual aspects of the plot (such as the background color, the size of the tick marks, and the font of the axis labels). The default is `theme_classic`; I prefer `theme_minimal`:
+
+```{r, message = FALSE}
+ggplot(data=gapminder_2007, aes(x=gdp_per_cap, y=life_exp)) +
+  geom_point(aes(size=pop)) +
+  theme_minimal()
+```
+
 ### Scales
 
-Recall that some layers, such as labels and themes, have
-default values that are assumed if we do not specify
-any alternatives. Another layer type with a default
+Another layer type with a default
 value are **scales**, which are associated with every
 variable-assigned aesthetic. For example, the
 `scale_x_continuous` and `scale_y_continuous` functions
@@ -108,9 +75,9 @@ The defaults (just fitting all of the data) usually work well,
 but we can modify them when needed:
 
 ```{r}
-ggplot(mpg, aes(displ, hwy)) +
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
   geom_point() +
-  scale_x_continuous(limits = c(0, 7.5))
+  scale_x_continuous(limits = c(-10000, 50000))
 ```
 
 There are also alternative scales for the x and y coordinates,
@@ -121,9 +88,9 @@ The color scales determine the exact colors being used. The
 colors that I prefer:
 
 ```{r}
-ggplot(mpg, aes(displ, hwy)) +
-  geom_point(aes(color = cty)) +
-  scale_color_viridis()
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
+  geom_point(aes(color = continent)) +
+  scale_color_viridis(discrete = TRUE)
 ```
 
 The viridis package is particularly useful when producing
@@ -139,17 +106,9 @@ more categorical variables. There are only two such layers:
 how they work. Facet wrapping takes a single variable:
 
 ```{r}
-ggplot(mpg, aes(displ, hwy)) +
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
   geom_point() +
-  facet_wrap(~class)
-```
-
-And the grid variant takes two variables:
-
-```{r}
-ggplot(mpg, aes(displ, hwy)) +
-  geom_point() +
-  facet_grid(drv~class)
+  facet_wrap(~continent)
 ```
 
 I suggest taking a look at the help pages to see how the
@@ -207,7 +166,7 @@ variable second. The flipped coordinates allow use to make
 horizontal boxplots:
 
 ```{r}
-ggplot(mpg, aes(class, hwy)) +
+ggplot(gapminder_2007, aes(continent, life_exp)) +
   geom_boxplot() +
   coord_flip()
 ```
@@ -254,9 +213,9 @@ any standard ggplot graphic:
 
 ```{r, eval = FALSE}
 library(plotly)
-ggplot(mpg, aes(displ, hwy)) +
-  geom_point(aes(color = cty)) +
-  scale_color_viridis()
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
+  geom_point(aes(color = continent)) +
+  scale_color_viridis(discrete = TRUE)
 ```
 
 And then call the `ggplotly` function:
@@ -280,9 +239,11 @@ unknown aesthetic; here I use one called "fake":
 
 ```{r, eval = FALSE}
 library(plotly)
-ggplot(mpg, aes(displ, hwy)) +
-  geom_point(aes(color = cty, fake = manufacturer)) +
-  scale_color_viridis()
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
+  geom_point(aes(color = continent, fake = country)) +
+  scale_color_viridis(discrete = TRUE)
+
+ggplotly()
 ```
 
 The interactive plot should now show the manufacturer on

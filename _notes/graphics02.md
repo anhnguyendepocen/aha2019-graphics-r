@@ -12,91 +12,9 @@ library(readr)
 library(ggplot2)
 library(dplyr)
 library(viridis)
+
+gapminder_2007 <- read_csv("https://statsmaths.github.io/stat_data/gapminder_2007.csv")
 {% endhighlight %}
-
-## Aesthetics: A brief review
-
-We will once again work with the `mpg` dataset for
-today's notes:
-
-
-{% highlight r %}
-mpg <- read_csv("https://statsmaths.github.io/stat_data/mpg.csv")
-{% endhighlight %}
-
-As a review, here is:
-
-
-{% highlight r %}
-ggplot(mpg, aes(displ, cty)) +
-  geom_point()
-{% endhighlight %}
-
-<img src="../assets/graphics02/unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="100%" />
-
-Most confusion, though I think nearly everyone figured
-it out by the end of class, came from the difference between
-assigning aesthetics to a fixed value versus a variable
-in the dataset. These need a different syntax and doing
-it incorrectly produces very unhelpful error messages or
-(even worse) silently ignores your request.
-
-In short, to assign a variable to an aesthetic value,
-always put it inside of the `aes` function and include
-it as the first set of inputs to the geometry. Fixed
-values go after the variable values and must be outside
-of the `aes` function. Here is a plot with a variable
-color but a fixed size:
-
-
-{% highlight r %}
-ggplot(mpg, aes(displ, cty)) +
-  geom_point(aes(color = class), size = 5)
-{% endhighlight %}
-
-<img src="../assets/graphics02/unnamed-chunk-4-1.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" width="100%" />
-
-Here is a variable size and a fixed color:
-
-
-{% highlight r %}
-ggplot(mpg, aes(displ, cty)) +
-  geom_point(aes(size = hwy), color = "salmon")
-{% endhighlight %}
-
-<img src="../assets/graphics02/unnamed-chunk-5-1.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" width="100%" />
-
-And here is a plot with fixed size and fixed color:
-
-
-{% highlight r %}
-ggplot(mpg, aes(displ, cty)) +
-  geom_point(size = 5, color = "salmon")
-{% endhighlight %}
-
-<img src="../assets/graphics02/unnamed-chunk-6-1.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" width="100%" />
-
-Finally, recall that we are using inheritance from the
-`ggplot` function to assign the same dataset, x and
-(if needed) y aesthetics to each layer. We can modify
-any of these if needed. For example, here I add both
-the city and highway miles per gallon to the same plot:
-
-
-{% highlight r %}
-ggplot(mpg, aes(displ, cty)) +
-  geom_point() +
-  geom_point(aes(y = hwy), color = "red")
-{% endhighlight %}
-
-<img src="../assets/graphics02/unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" width="100%" />
-
-Notice that in this example we still have to hold by the
-rules for aesthetic mappings. In the second call to
-`geom_point`, y is mapped to a variable (`hwy`) and
-therefore goes first and inside of `aes`. The color
-is a fixed value and therefore goes outside of `aes`
-and follows it.
 
 ## More Graphics Layers
 
@@ -105,11 +23,50 @@ and developed the concepts and syntax behind building graphics in
 R with the **ggplot2** package. Today we will continue this by
 looking at the remaining layer types within the Grammar of Graphics.
 
+
+### Labels
+
+We can add labels to the plot by adding new layers to the plot:
+
+- `xlab("text for the x-axis")`
+- `ylab("text for the y-axis")`
+- `ggtitle("text for the title/top of the plot")`
+- `labs(size = "label for the size legend")`
+
+Let's add these to the current plot:
+
+
+{% highlight r %}
+ggplot(data=gapminder_2007, aes(x=gdp_per_cap, y=life_exp)) +
+  geom_point(aes(size=pop)) +
+  xlab("Gross domestic product per capita (USD)") +
+  ylab("Life expectancy at birth (years)") +
+  labs(size = "Population") +
+  ggtitle("Macroeconomic variables by country (2007)")
+{% endhighlight %}
+
+<img src="../assets/graphics02/unnamed-chunk-2-1.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" width="100%" />
+
+Do not feel that you need to add complex labels to plots as we are doing
+an exploratory analysis. However, when presenting plots in a report these
+should certainly be used to clarify the plot to the audience or readers.
+
+### Themes
+
+Another type of layer with a default value is the theme layer. These describe all of the non-data oriented visual aspects of the plot (such as the background color, the size of the tick marks, and the font of the axis labels). The default is `theme_classic`; I prefer `theme_minimal`:
+
+
+{% highlight r %}
+ggplot(data=gapminder_2007, aes(x=gdp_per_cap, y=life_exp)) +
+  geom_point(aes(size=pop)) +
+  theme_minimal()
+{% endhighlight %}
+
+<img src="../assets/graphics02/unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="100%" />
+
 ### Scales
 
-Recall that some layers, such as labels and themes, have
-default values that are assumed if we do not specify
-any alternatives. Another layer type with a default
+Another layer type with a default
 value are **scales**, which are associated with every
 variable-assigned aesthetic. For example, the
 `scale_x_continuous` and `scale_y_continuous` functions
@@ -119,12 +76,12 @@ but we can modify them when needed:
 
 
 {% highlight r %}
-ggplot(mpg, aes(displ, hwy)) +
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
   geom_point() +
-  scale_x_continuous(limits = c(0, 7.5))
+  scale_x_continuous(limits = c(-10000, 50000))
 {% endhighlight %}
 
-<img src="../assets/graphics02/unnamed-chunk-8-1.png" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" width="100%" />
+<img src="../assets/graphics02/unnamed-chunk-4-1.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" width="100%" />
 
 There are also alternative scales for the x and y coordinates,
 such as `scale_x_log10` and `scale_x_sqrt`.
@@ -135,12 +92,12 @@ colors that I prefer:
 
 
 {% highlight r %}
-ggplot(mpg, aes(displ, hwy)) +
-  geom_point(aes(color = cty)) +
-  scale_color_viridis()
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
+  geom_point(aes(color = continent)) +
+  scale_color_viridis(discrete = TRUE)
 {% endhighlight %}
 
-<img src="../assets/graphics02/unnamed-chunk-9-1.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" width="100%" />
+<img src="../assets/graphics02/unnamed-chunk-5-1.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" width="100%" />
 
 The viridis package is particularly useful when producing
 plots for overhead projectors, plots that may need to printed,
@@ -156,23 +113,12 @@ how they work. Facet wrapping takes a single variable:
 
 
 {% highlight r %}
-ggplot(mpg, aes(displ, hwy)) +
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
   geom_point() +
-  facet_wrap(~class)
+  facet_wrap(~continent)
 {% endhighlight %}
 
-<img src="../assets/graphics02/unnamed-chunk-10-1.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" width="100%" />
-
-And the grid variant takes two variables:
-
-
-{% highlight r %}
-ggplot(mpg, aes(displ, hwy)) +
-  geom_point() +
-  facet_grid(drv~class)
-{% endhighlight %}
-
-<img src="../assets/graphics02/unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" width="100%" />
+<img src="../assets/graphics02/unnamed-chunk-6-1.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" width="100%" />
 
 I suggest taking a look at the help pages to see how the
 `scales` option modifies these plots; it determines whether
@@ -197,7 +143,7 @@ ggplot() +
   scale_y_continuous(limit = c(0, 50))
 {% endhighlight %}
 
-<img src="../assets/graphics02/unnamed-chunk-12-1.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" width="100%" />
+<img src="../assets/graphics02/unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" width="100%" />
 
 Here I added them to a blank plot but you can add any of these
 elements to a plot with other data points.
@@ -213,7 +159,7 @@ ggplot() +
   scale_y_continuous(limit = c(0, 1))
 {% endhighlight %}
 
-<img src="../assets/graphics02/unnamed-chunk-13-1.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" width="100%" />
+<img src="../assets/graphics02/unnamed-chunk-8-1.png" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" width="100%" />
 
 Again, these can be added to a plot with data elements as
 well. You can also specify the color, size, and other
@@ -236,12 +182,12 @@ horizontal boxplots:
 
 
 {% highlight r %}
-ggplot(mpg, aes(class, hwy)) +
+ggplot(gapminder_2007, aes(continent, life_exp)) +
   geom_boxplot() +
   coord_flip()
 {% endhighlight %}
 
-<img src="../assets/graphics02/unnamed-chunk-14-1.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" width="100%" />
+<img src="../assets/graphics02/unnamed-chunk-9-1.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" width="100%" />
 
 Summary statistics are used internally by plots such as the
 histogram and box plot (notice that their y axis is a variable
@@ -286,9 +232,9 @@ any standard ggplot graphic:
 
 {% highlight r %}
 library(plotly)
-ggplot(mpg, aes(displ, hwy)) +
-  geom_point(aes(color = cty)) +
-  scale_color_viridis()
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
+  geom_point(aes(color = continent)) +
+  scale_color_viridis(discrete = TRUE)
 {% endhighlight %}
 
 And then call the `ggplotly` function:
@@ -314,9 +260,11 @@ unknown aesthetic; here I use one called "fake":
 
 {% highlight r %}
 library(plotly)
-ggplot(mpg, aes(displ, hwy)) +
-  geom_point(aes(color = cty, fake = manufacturer)) +
-  scale_color_viridis()
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
+  geom_point(aes(color = continent, fake = country)) +
+  scale_color_viridis(discrete = TRUE)
+
+ggplotly()
 {% endhighlight %}
 
 The interactive plot should now show the manufacturer on

@@ -35,7 +35,7 @@ to finish; on slower connections or older computers, it may take even
 longer. If you run into any problems, please let me know!
 
 ```{r, eval = FALSE}
-pkgs <- c("dplyr", "ggplot2", "stringr", "viridis", "plotly", "readr")
+pkgs <- c("dplyr", "ggplot2", "stringr", "viridis", "plotly", "readr", "historydata")
 
 install.packages(pkgs,
                  repos = "https://cloud.r-project.org",
