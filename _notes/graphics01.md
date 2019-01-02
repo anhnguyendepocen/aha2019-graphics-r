@@ -5,15 +5,6 @@ output: html_notebook
 ---
 
 
-
-
-{% highlight r %}
-library(readr)
-library(ggplot2)
-library(dplyr)
-library(viridis)
-{% endhighlight %}
-
 ## A Brief History of Statistical Graphics
 
 ### Early History
@@ -172,8 +163,8 @@ catholic_dioceses
 
 {% highlight text %}
 ## # A tibble: 425 x 6
-##    diocese                    rite    lat  long event  date               
-##    <chr>                      <chr> <dbl> <dbl> <fct>  <dttm>             
+##    diocese                    rite    lat  long event  date
+##    <chr>                      <chr> <dbl> <dbl> <fct>  <dttm>
 ##  1 Baltimore, Maryland        Latin  39.3 -76.6 erect… 1789-04-06 00:00:00
 ##  2 New Orleans, Louisiana     Latin  30.0 -90.1 erect… 1793-04-25 00:00:00
 ##  3 Boston, Massachusetts      Latin  42.4 -71.1 erect… 1808-04-08 00:00:00
