@@ -1,5 +1,5 @@
 ---
-title: "Graphics in R —-- II"
+title: "Graphics in R II"
 author: "Taylor Arnold"
 output: html_notebook
 ---
@@ -11,21 +11,8 @@ output: html_notebook
 library(readr)
 library(ggplot2)
 library(dplyr)
-{% endhighlight %}
-
-
-
-{% highlight text %}
-## Warning: package 'dplyr' was built under R version 3.5.1
-{% endhighlight %}
-
-
-
-{% highlight r %}
 library(viridis)
 {% endhighlight %}
-
-![](../assets/img/data_pipeline_visualize.png)
 
 ## Aesthetics: A brief review
 
@@ -37,8 +24,7 @@ today's notes:
 mpg <- read_csv("https://statsmaths.github.io/stat_data/mpg.csv")
 {% endhighlight %}
 
-Most of you seemed fairly confident last time about
-how to construct basic plots such as a scatter plot:
+As a review, here is:
 
 
 {% highlight r %}

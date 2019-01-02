@@ -3,5 +3,64 @@ title: "AHA2019 -- Setup"
 output: html_notebook
 ---
 
+## Testing
+
+To start, let's just make sure R is running okay on your computer while
+explaining the basic mechanism for using RMarkdown files. Below is a **code
+chunk**. Click the green run button to execute the code. The result should
+appear directly below.
+
+```{r}
+1 + 1
+```
+
+You can, and will, edit code chunks with your own R code. Use the chunk below
+to calculate the sum of 1 and 2 and execute the code.
+
+```{r}
+
+```
+## Further set-up
+
+### Packages
+
+The final step is to download all of the R packages that we will
+need for the semester. It is generally easier to do these all at
+once rather than as we go along.
+
+To install the packages required for the workshop, run the following lines
+of code in the console. There may be a warning about one or two
+packages not being available. Note that this may take 5-10 minutes
+to finish; on slower connections or older computers, it may take even
+longer. If you run into any problems, please let me know!
+
+```{r, eval = FALSE}
+pkgs <- c("dplyr", "ggplot2", "stringr", "devtools", "viridis", "plotly",
+          "readr")
+
+install.packages(pkgs,
+                 repos = "https://cloud.r-project.org",
+                 type = "binary",
+                 dependencies = TRUE)
+```
+
+Now, you will also need install the `smodels` package. We have written
+this package for our own courses, and you'll need to install it in a slightly
+different way.
+
+```{r, eval = FALSE}
+devtools::install_github("statsmaths/smodels")
+```
+
+### Defaults
+
+RStudio will work fine for you today with just the packages above. We also
+suggest making the following changes as they greatly help when using R on your
+own in the future.
+
+- In the RStudio menu click on `Tools > Global Options...`
+- Look for the first drop-down: `Save the workspace to .RData on exit`
+- Change this first drop-down to `Never`
+- All of the check-boxes above this dropdown should be unchecked.
 
 

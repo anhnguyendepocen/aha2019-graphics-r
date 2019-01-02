@@ -1,5 +1,5 @@
 ---
-title: "Graphics in R —-- I"
+title: "Graphics in R I"
 author: "Taylor Arnold"
 output: html_notebook
 ---
@@ -11,21 +11,8 @@ output: html_notebook
 library(readr)
 library(ggplot2)
 library(dplyr)
-{% endhighlight %}
-
-
-
-{% highlight text %}
-## Warning: package 'dplyr' was built under R version 3.5.1
-{% endhighlight %}
-
-
-
-{% highlight r %}
 library(viridis)
 {% endhighlight %}
-
-![](../assets/img/data_pipeline_visualize.png)
 
 ## A Brief History of Statistical Graphics
 
@@ -147,303 +134,333 @@ interpretation, see the (very readable and open access) paper
 ["The Layered Grammar of Graphics"](http://vita.had.co.nz/papers/layered-grammar.pdf).
 It is the usage of the **gplot2** package that we now turn to.
 
+## Hans Rosling
+
+Hans Rosling's 200 Countries, 200 Years, 4 Minutes:
+
+- [https://www.youtube.com/watch?v=jbkSRLYSojo](https://www.youtube.com/watch?v=jbkSRLYSojo)
+
+I have shown this to nearly all of my statistics courses, and while
+a bit dated it is still the best representation of what data visualization is
+all about.
+
+## What is 'data'?
+
+In this workshop, we will explicitly work with data in a tabular format. It is
+important in understanding the grammar of graphics to have some basic
+terminology about tabular data.
+
+Tables of data have **observations** stored in rows and
+**variables** stored in columns. The individual elements are
+called **values**. So, each row represents a
+particular object in our dataset and each column represents
+some feature of the objects.
+
+![](../assets/img/tidy-1.png)
+
+Let's look at a dataset of Roman Catholic dioceses in the United States:
+
+
+{% highlight r %}
+library(historydata)
+
+catholic_dioceses <- as_data_frame(catholic_dioceses)
+catholic_dioceses
+{% endhighlight %}
+
+
+
+{% highlight text %}
+## # A tibble: 425 x 6
+##    diocese                    rite    lat  long event  date               
+##    <chr>                      <chr> <dbl> <dbl> <fct>  <dttm>             
+##  1 Baltimore, Maryland        Latin  39.3 -76.6 erect… 1789-04-06 00:00:00
+##  2 New Orleans, Louisiana     Latin  30.0 -90.1 erect… 1793-04-25 00:00:00
+##  3 Boston, Massachusetts      Latin  42.4 -71.1 erect… 1808-04-08 00:00:00
+##  4 Louisville, Kentucky       Latin  38.3 -85.8 erect… 1808-04-08 00:00:00
+##  5 New York, New York         Latin  40.7 -74.0 erect… 1808-04-08 00:00:00
+##  6 Philadelphia, Pennsylvania Latin  40.0 -75.2 erect… 1808-04-08 00:00:00
+##  7 Richmond, Virginia         Latin  37.5 -77.4 erect… 1820-06-19 00:00:00
+##  8 Charleston, South Carolina Latin  32.8 -79.9 erect… 1820-07-11 00:00:00
+##  9 Cincinnati, Ohio           Latin  39.1 -84.5 erect… 1821-06-19 00:00:00
+## 10 St. Louis, Missouri        Latin  38.6 -90.2 erect… 1826-07-18 00:00:00
+## # ... with 415 more rows
+{% endhighlight %}
+
+The observations here are *dioceses* and the variables are: `diocese`,
+`rite`, `lat`, `long`, `event`, and  date`. Each variable
+measures something about a given observation. What exactly
+constitutes a row of the data is called a **unit of analysis**.
+Keeping in mind what the unit of analysis is will be very
+important as we think about how data is being used.
+
 ## Graphics in R: ggplot2
 
-### A Basic Plot
+### Example with Hans Roslin's data
 
-In order to look at graphics, we first need to read in
-some data. It has become almost canonical to look at
-the cars dataset when doing tutorials of ggplot, so
-I will do the same here. We read in the dataset using
-the **read_csv** function (more on this another day):
+To illustrate how to actually use the grammar of graphcs in R points, let's
+look at a subset of the data that Hans Roslin used in the video. It contains
+just a single year of the data (2007).
 
 
 {% highlight r %}
-mpg <- read_csv("https://statsmaths.github.io/stat_data/mpg.csv")
+gapminder_2007 <- read_csv("https://statsmaths.github.io/stat_data/gapminder_2007.csv")
+gapminder_2007
 {% endhighlight %}
 
 
 
 {% highlight text %}
-## Parsed with column specification:
-## cols(
-##   manufacturer = col_character(),
-##   model = col_character(),
-##   displ = col_double(),
-##   year = col_integer(),
-##   cyl = col_integer(),
-##   trans = col_character(),
-##   drv = col_character(),
-##   cty = col_integer(),
-##   hwy = col_integer(),
-##   fl = col_character(),
-##   class = col_character()
-## )
+## # A tibble: 142 x 5
+##    country     continent life_exp       pop gdp_per_cap
+##    <chr>       <chr>        <dbl>     <int>       <dbl>
+##  1 Afghanistan Asia          43.8  31889923        975.
+##  2 Albania     Europe        76.4   3600523       5937.
+##  3 Algeria     Africa        72.3  33333216       6223.
+##  4 Angola      Africa        42.7  12420476       4797.
+##  5 Argentina   Americas      75.3  40301927      12779.
+##  6 Australia   Oceania       81.2  20434176      34435.
+##  7 Austria     Europe        79.8   8199783      36126.
+##  8 Bahrain     Asia          75.6    708573      29796.
+##  9 Bangladesh  Asia          64.1 150448339       1391.
+## 10 Belgium     Europe        79.4  10392226      33693.
+## # ... with 132 more rows
 {% endhighlight %}
 
+Here is a plot similar to the one that Roslin used without all of the fancy
+colors and moving elements.
 
 
 {% highlight r %}
-mpg
-{% endhighlight %}
-
-
-
-{% highlight text %}
-## # A tibble: 234 x 11
-##    manufacturer model    displ  year   cyl trans   drv     cty   hwy fl   
-##    <chr>        <chr>    <dbl> <int> <int> <chr>   <chr> <int> <int> <chr>
-##  1 audi         a4         1.8  1999     4 auto(l… f        18    29 p    
-##  2 audi         a4         1.8  1999     4 manual… f        21    29 p    
-##  3 audi         a4         2    2008     4 manual… f        20    31 p    
-##  4 audi         a4         2    2008     4 auto(a… f        21    30 p    
-##  5 audi         a4         2.8  1999     6 auto(l… f        16    26 p    
-##  6 audi         a4         2.8  1999     6 manual… f        18    26 p    
-##  7 audi         a4         3.1  2008     6 auto(a… f        18    27 p    
-##  8 audi         a4 quat…   1.8  1999     4 manual… 4        18    26 p    
-##  9 audi         a4 quat…   1.8  1999     4 auto(l… 4        16    25 p    
-## 10 audi         a4 quat…   2    2008     4 manual… 4        20    28 p    
-## # ... with 224 more rows, and 1 more variable: class <chr>
-{% endhighlight %}
-
-You can see the dataset in RStudio as a table by clicking
-on the data in the upper-right-hand corner of the screen.
-
-We will start by plotting the engine size (`displ`) against
-the number of miles the car can travel on the highway
-with one gallon of fuel (`hwy`). To plot these variables
-we use the follow syntax:
-
-
-{% highlight r %}
-ggplot() +
-  geom_point(data = mpg, mapping = aes(x = displ, y = hwy))
-{% endhighlight %}
-
-<img src="../assets/graphics01/unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="100%" />
-
-In ggplot, we use the `+` sign to (literally) add together
-layers to create a plot. We can associate to each layer a
-dataset and aesthetic mappings. Here we have set the dataset
-to `mpg` and described which variables denote the x- and
-y-coordinates.
-
-Usually we want to associate the same dataset, x, and y
-coordinates to all of the layers. This is done by *inheritance*;
-if we set something in one layer, future layers will assume
-you want to most recent settings unless you change them. As
-such, I would more commonly write our first plot like this:
-
-
-{% highlight r %}
-ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
   geom_point()
 {% endhighlight %}
 
 <img src="../assets/graphics01/unnamed-chunk-4-1.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" width="100%" />
 
-Also, we can omit the explicit function input names as it
-is assumed that the first input to `ggplot` is the dataset
-and the second is the mapping. Further, the first element of
-`aes` is assumed to be x and the second is assumed to be
-y. So, we can write the plot in a third way in the following
-compact way:
+Here there are four specific elements that we had to choose to create the plot:
+
+1. selecting the dataset name to use, `gapminder_2007`
+2. selecting the variable `gdp_per_cap` to appear on the x-axis
+3. selecting the variable `life_exp` to appear on the y-axis
+4. choosing to represent the dataset with points by using the `geom_point` layer.
+
+The specific syntax of how to put these elements together is just something that
+you need to learn and memorize. Note that the plus sign goes at the end of the
+first line and the second line is indented by two spaces.
+
+## Layers
+
+The beauty of the grammar of graphics is that we can construct many types of
+plots by combining together simple layers. There is another geometry called
+`geom_line` that draws a line between data observations instead of points
+(note: this does not actually make much sense here, but we will try it just
+to illustrate the idea):
 
 
 {% highlight r %}
-ggplot(mpg, aes(displ, hwy)) +
-  geom_point()
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
+  geom_line()
 {% endhighlight %}
 
 <img src="../assets/graphics01/unnamed-chunk-5-1.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" width="100%" />
 
-In the following sections we will see how to modify and build
-on this basic structure to create more complex graphics.
-
-### Geometries
-
-Their are many alternative geometries that we can replace or
-add to the `geom_point` layer. My current count has 45 such
-geometries in the base installation of **ggplot2**; you will
-find that only a small subset are needed for most use cases.
-
-For example, if we want to draw a line rather than points we
-could do the following:
+But let's say we want the points **and** the lines, how does that work? Well, we just
+add the two layers together:
 
 
 {% highlight r %}
-ggplot(mpg, aes(displ, hwy)) +
-  geom_line()
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
+  geom_line() +
+  geom_point()
 {% endhighlight %}
 
 <img src="../assets/graphics01/unnamed-chunk-6-1.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" width="100%" />
 
-If we wanted both the lines and the points, we simply add the
-layers together:
+Or, we could add a "best fit line" through the data using the `geom_bestfit` layer:
 
 
 {% highlight r %}
-ggplot(mpg, aes(displ, hwy)) +
-  geom_point() +
-  geom_line()
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
+  geom_bestfit() +
+  geom_point()
 {% endhighlight %}
 
-<img src="../assets/graphics01/unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" width="100%" />
 
-At this point it is easy to forget what is actually going on
-under the hood of **ggplot2** via inheritance and implied
-positional arguments:
+
+{% highlight text %}
+## Error in geom_bestfit(): could not find function "geom_bestfit"
+{% endhighlight %}
+
+We will cover these types of modeling lines in more detail in the third section of the
+course.
+
+## Other geometry types
+
+The `geom_text` is another layer type that puts a label in place of a point. It requires
+a new input called the `label` that describes which variable is used for the text. Here we
+see it combined with the points layer:
 
 
 {% highlight r %}
-ggplot() +
-  geom_point(data = mpg, mapping = aes(x = displ, y = hwy)) +
-  geom_line(data = mpg, mapping = aes(x = displ, y = hwy))
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
+  geom_text(aes(label = country))
 {% endhighlight %}
 
 <img src="../assets/graphics01/unnamed-chunk-8-1.png" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" width="100%" />
 
-The package is smart, but we don't want it to be smarter
-than us!
+Again, the specific syntax is something you just need to look up or memorize.
 
-Note that some geometries do not take an y-coordinate (they
-will thrown an error if you try). For example, the `geom_bar`
-produces a visualization of categorical counts:
+We can also have the plot compute summary statistics, such as the mean, for groups in
+a dataset. Here we see the mean life expectancy for each continent:
 
 
 {% highlight r %}
-ggplot(mpg, aes(class)) +
-  geom_bar()
+ggplot(gapminder_2007, aes(continent, life_exp)) +
+  geom_mean()
 {% endhighlight %}
 
-<img src="../assets/graphics01/unnamed-chunk-9-1.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" width="100%" />
 
-Some other geometries you may find useful:
 
-- `geom_histogram`
-- `geom_smooth`
-- `geom_boxplot`
-- `geom_text`
+{% highlight text %}
+## Error in geom_mean(): could not find function "geom_mean"
+{% endhighlight %}
 
-At the end of class today I will show you how to find a
-more complete list.
+## Data Aesthetics
 
-### Aesthetic Mappings
+We discussed how in the first line the variable `gdp_per_cap` is mapped to the x-axis
+and `life_exp` is mapped to the y-axis. One powerful feature of the grammar of graphics
+is the ability to map variables into other graphical parameters. These are called
+"aesthetics" (that is what the `aes()` function stands for) and we already saw one example
+last time with the `geom_text` function.
 
-The minimal mappings needed to create a `geom_point` layer
-are the x and y coordinates. There are several other
-aesthetics that we can change (along with defaults that
-are used when we do not specify them). For the points
-geometry they are:
-
-- alpha (the opacity of the points)
-- color
-- fill
-- shape
-- size
-
-We can change any of these using the same syntax as
-we did with the x and y coordinates. However, we always
-have to specify them by name because `aes` does not know
-which of them we would want to modify. Also, I always set
-these *within* the layer rather than using inheritance
-because it is likely that you will not want them to
-propagate through the whole plot:
+For example, we can change the color of the points to correspond to a variable in the
+dataset like this:
 
 
 {% highlight r %}
-ggplot(mpg, aes(displ, hwy)) +
-  geom_point(aes(color = class))
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
+  geom_point(aes(color = continent))
 {% endhighlight %}
 
 <img src="../assets/graphics01/unnamed-chunk-10-1.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" width="100%" />
 
-This plot begins to show the power of **ggplot2** by showing
-how easily we can add information to a visualization with
-only a minor modification of the code.
-
-It is possible to set the value of optional aesthetics to
-a fix value rather than assigning it to a variable in the
-dataset. To do this, we pass the value directly to the
-geom layer without going through the `aes` function. Here,
-we make a point plot with large (default size is 1),
-yellow, opaque points (alpha = 1 is default, alpha = 0 is
-invisible):
+We can also map a continuous variable to color, though the default scale
+is not very nice (more on this in a bit).
 
 
 {% highlight r %}
-ggplot(mpg, aes(displ, hwy)) +
-  geom_point(alpha = 0.2, color = "yellow", size = 10)
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
+  geom_point(aes(color = log(pop)))
 {% endhighlight %}
 
 <img src="../assets/graphics01/unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" width="100%" />
 
-Of course, we can mix these two together:
+We could also change the size of the point to match the population. Note that R
+writes the population key in scientific notation (2.5e+08 is the same as 2.5 time
+10 to the power of eight).
 
 
 {% highlight r %}
-ggplot(mpg, aes(displ, hwy)) +
-  geom_point(aes(color = class), alpha = 0.2, size = 10)
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
+  geom_point(aes(size = pop))
 {% endhighlight %}
 
 <img src="../assets/graphics01/unnamed-chunk-12-1.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" width="100%" />
 
-Notice that if you add a `geom_line` layer to this plot,
-the color, size, and alpha parameters will not pass through
-because we specified them in the geom layer and not in the
-`ggplot` function.
-
-### Labels and Themes
-
-There are other layer types beyond geometries, most of which
-have default settings if we do not specify them manually. For
-example, we can add a label to an aesthetic using the `labs`
-function as follows:
+Or, finally, we could change both the size and color.
 
 
 {% highlight r %}
-ggplot(mpg, aes(displ, hwy)) +
-  geom_point(aes(color = class)) +
-  labs(x = "engine size in litres") +
-  labs(y = "miles per gallon (highway)") +
-  labs(color = "Car Class")
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
+  geom_point(aes(size = pop, color = continent))
 {% endhighlight %}
 
 <img src="../assets/graphics01/unnamed-chunk-13-1.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" width="100%" />
 
-Look back the prior plots to see that these were added
-automatically. Of course, you can add whatever subset of
-these you need, letting the defaults hold for the other
-values.
+Notice that R takes care of the specific colors and sizes. All we do is indicate which
+variables are mapped to a given value.
 
-Another type of layer with a default value is the theme
-layer. These describe all of the non-data oriented visual
-aspects of the plot (such as the background color, the
-size of the tick marks, and the font of the axis labels).
-The default is `theme_classic`; I prefer `theme_minimal`:
+I rarely do this in practice, but it is also  possible to map a variable to a shape:
 
 
 {% highlight r %}
-ggplot(mpg, aes(displ, hwy)) +
-  geom_point(aes(color = class)) +
-  theme_minimal()
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
+  geom_point(aes(shape = continent))
 {% endhighlight %}
 
 <img src="../assets/graphics01/unnamed-chunk-14-1.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" width="100%" />
 
-I find this much cleaner than the out-of-the-box theme.
-Amongst other benefits, it saves a lot on ink when trying
-to print!
+## Fixed aesthetics
 
-## Resources
+A very powerful feature of the grammar of graphics is the ability to map a variable to
+a visual aesthetic such as the x- and y-axes or the color and shape. In some cases,
+though, you may just want to change an aesthetic to a fixed value for all points.
+This can be done as well by specifying the aesthetic **outside** of the `aes()`
+function. For example, here I'll change all of the points to be blue:
 
-Here are several good resources if you want to learn more about
-the Grammar of Graphics in R (the second in particular might
-be very helpful as a reference):
 
-- [R for Data Science: Chapter 3](http://r4ds.had.co.nz/data-visualisation.html)
-- [ggplot2 cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf)
-- [ggplot2 aesthetic vignette](https://cran.r-project.org/web/packages/ggplot2/vignettes/ggplot2-specs.html)
-- R help pages: type something like `?geom_point` for help
+{% highlight r %}
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
+  geom_point(color = "blue")
+{% endhighlight %}
 
-Of course, you can also ask us any questions you may have!
+<img src="../assets/graphics01/unnamed-chunk-15-1.png" title="plot of chunk unnamed-chunk-15" alt="plot of chunk unnamed-chunk-15" width="100%" />
+
+R won't give an error if I put the same code inside of the aes function. Watch
+this:
+
+
+{% highlight r %}
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
+  geom_point(aes(color = "blue"))
+{% endhighlight %}
+
+<img src="../assets/graphics01/unnamed-chunk-16-1.png" title="plot of chunk unnamed-chunk-16" alt="plot of chunk unnamed-chunk-16" width="100%" />
+
+What's happening here?!
+
+You can mix fixed and variable aesthetics in the same plot. For example, here I
+use color to represent the continent but make all the points larger.
+
+
+{% highlight r %}
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
+  geom_point(aes(color = continent), size = 3)
+{% endhighlight %}
+
+<img src="../assets/graphics01/unnamed-chunk-17-1.png" title="plot of chunk unnamed-chunk-17" alt="plot of chunk unnamed-chunk-17" width="100%" />
+
+Note that the `aes()` part **must** go first. Just another rule you need to remember.
+
+
+## Facets
+
+A special layer type within the **ggplot2** framework, facets allow us
+to produce many small plots for each value of a character variable. It
+can be added onto almost any other plot.
+
+
+{% highlight r %}
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
+  geom_point() +
+  facet_wrap(~continent)
+{% endhighlight %}
+
+<img src="../assets/graphics01/unnamed-chunk-18-1.png" title="plot of chunk unnamed-chunk-18" alt="plot of chunk unnamed-chunk-18" width="100%" />
+
+Notice that the scales of the axes are all the same. Sometimes this is
+useful, but in other cases it is useful to allow these to change. We
+can do this by adding the option `scales="free"`:
+
+
+{% highlight r %}
+ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
+  geom_point() +
+  facet_wrap(~continent, scales = "free")
+{% endhighlight %}
+
+<img src="../assets/graphics01/unnamed-chunk-19-1.png" title="plot of chunk unnamed-chunk-19" alt="plot of chunk unnamed-chunk-19" width="100%" />
+
+There are also options `scales="free_x"` and `scales="free_y"` if you
+would like to only allow one axis to change.
