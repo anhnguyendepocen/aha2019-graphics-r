@@ -277,20 +277,17 @@ ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
 
 <img src="../assets/graphics01/unnamed-chunk-6-1.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" width="100%" />
 
-Or, we could add a "best fit line" through the data using the `geom_bestfit` layer:
+Or, we could add a "best fit line" through the data using the `geom_smooth`
+layer with a particular option:
 
 
 {% highlight r %}
 ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
-  geom_bestfit() +
+  geom_smooth(method = "lm") +
   geom_point()
 {% endhighlight %}
 
-
-
-{% highlight text %}
-## Error in geom_bestfit(): could not find function "geom_bestfit"
-{% endhighlight %}
+<img src="../assets/graphics01/unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" width="100%" />
 
 We will cover these types of modeling lines in more detail in the third section of the
 course.
@@ -311,20 +308,27 @@ ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
 
 Again, the specific syntax is something you just need to look up or memorize.
 
-We can also have the plot compute summary statistics, such as the mean, for groups in
-a dataset. Here we see the mean life expectancy for each continent:
+We can also have the show a single variable in a plot using a specific type
+of geometry. To show the distribution of a categorical variable, use
+`geom_bar` to make a bar plot:
 
 
 {% highlight r %}
-ggplot(gapminder_2007, aes(continent, life_exp)) +
-  geom_mean()
+ggplot(gapminder_2007, aes(continent)) +
+  geom_bar()
 {% endhighlight %}
 
+<img src="../assets/graphics01/unnamed-chunk-9-1.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" width="100%" />
+
+Or, use `geom_hist` to build a histogram of a continuous variable:
 
 
-{% highlight text %}
-## Error in geom_mean(): could not find function "geom_mean"
+{% highlight r %}
+ggplot(gapminder_2007, aes(gdp_per_cap)) +
+  geom_bar()
 {% endhighlight %}
+
+<img src="../assets/graphics01/unnamed-chunk-10-1.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" width="100%" />
 
 ## Data Aesthetics
 
@@ -343,7 +347,7 @@ ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
   geom_point(aes(color = continent))
 {% endhighlight %}
 
-<img src="../assets/graphics01/unnamed-chunk-10-1.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" width="100%" />
+<img src="../assets/graphics01/unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" width="100%" />
 
 We can also map a continuous variable to color, though the default scale
 is not very nice (more on this in a bit).
@@ -354,7 +358,7 @@ ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
   geom_point(aes(color = log(pop)))
 {% endhighlight %}
 
-<img src="../assets/graphics01/unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" width="100%" />
+<img src="../assets/graphics01/unnamed-chunk-12-1.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" width="100%" />
 
 We could also change the size of the point to match the population. Note that R
 writes the population key in scientific notation (2.5e+08 is the same as 2.5 time
@@ -366,7 +370,7 @@ ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
   geom_point(aes(size = pop))
 {% endhighlight %}
 
-<img src="../assets/graphics01/unnamed-chunk-12-1.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" width="100%" />
+<img src="../assets/graphics01/unnamed-chunk-13-1.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" width="100%" />
 
 Or, finally, we could change both the size and color.
 
@@ -376,7 +380,7 @@ ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
   geom_point(aes(size = pop, color = continent))
 {% endhighlight %}
 
-<img src="../assets/graphics01/unnamed-chunk-13-1.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" width="100%" />
+<img src="../assets/graphics01/unnamed-chunk-14-1.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" width="100%" />
 
 Notice that R takes care of the specific colors and sizes. All we do is indicate which
 variables are mapped to a given value.
@@ -389,7 +393,7 @@ ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
   geom_point(aes(shape = continent))
 {% endhighlight %}
 
-<img src="../assets/graphics01/unnamed-chunk-14-1.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" width="100%" />
+<img src="../assets/graphics01/unnamed-chunk-15-1.png" title="plot of chunk unnamed-chunk-15" alt="plot of chunk unnamed-chunk-15" width="100%" />
 
 ## Fixed aesthetics
 
@@ -405,7 +409,7 @@ ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
   geom_point(color = "blue")
 {% endhighlight %}
 
-<img src="../assets/graphics01/unnamed-chunk-15-1.png" title="plot of chunk unnamed-chunk-15" alt="plot of chunk unnamed-chunk-15" width="100%" />
+<img src="../assets/graphics01/unnamed-chunk-16-1.png" title="plot of chunk unnamed-chunk-16" alt="plot of chunk unnamed-chunk-16" width="100%" />
 
 R won't give an error if I put the same code inside of the aes function. Watch
 this:
@@ -416,9 +420,9 @@ ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
   geom_point(aes(color = "blue"))
 {% endhighlight %}
 
-<img src="../assets/graphics01/unnamed-chunk-16-1.png" title="plot of chunk unnamed-chunk-16" alt="plot of chunk unnamed-chunk-16" width="100%" />
+<img src="../assets/graphics01/unnamed-chunk-17-1.png" title="plot of chunk unnamed-chunk-17" alt="plot of chunk unnamed-chunk-17" width="100%" />
 
-What's happening here?!
+**What's happening here?!**
 
 You can mix fixed and variable aesthetics in the same plot. For example, here I
 use color to represent the continent but make all the points larger.
@@ -429,38 +433,6 @@ ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
   geom_point(aes(color = continent), size = 3)
 {% endhighlight %}
 
-<img src="../assets/graphics01/unnamed-chunk-17-1.png" title="plot of chunk unnamed-chunk-17" alt="plot of chunk unnamed-chunk-17" width="100%" />
-
-Note that the `aes()` part **must** go first. Just another rule you need to remember.
-
-
-## Facets
-
-A special layer type within the **ggplot2** framework, facets allow us
-to produce many small plots for each value of a character variable. It
-can be added onto almost any other plot.
-
-
-{% highlight r %}
-ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
-  geom_point() +
-  facet_wrap(~continent)
-{% endhighlight %}
-
 <img src="../assets/graphics01/unnamed-chunk-18-1.png" title="plot of chunk unnamed-chunk-18" alt="plot of chunk unnamed-chunk-18" width="100%" />
 
-Notice that the scales of the axes are all the same. Sometimes this is
-useful, but in other cases it is useful to allow these to change. We
-can do this by adding the option `scales="free"`:
-
-
-{% highlight r %}
-ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
-  geom_point() +
-  facet_wrap(~continent, scales = "free")
-{% endhighlight %}
-
-<img src="../assets/graphics01/unnamed-chunk-19-1.png" title="plot of chunk unnamed-chunk-19" alt="plot of chunk unnamed-chunk-19" width="100%" />
-
-There are also options `scales="free_x"` and `scales="free_y"` if you
-would like to only allow one axis to change.
+Note that the `aes()` part **must** go first. Just another rule you need to remember.

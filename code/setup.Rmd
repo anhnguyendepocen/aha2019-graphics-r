@@ -35,21 +35,12 @@ to finish; on slower connections or older computers, it may take even
 longer. If you run into any problems, please let me know!
 
 ```{r, eval = FALSE}
-pkgs <- c("dplyr", "ggplot2", "stringr", "devtools", "viridis", "plotly",
-          "readr")
+pkgs <- c("dplyr", "ggplot2", "stringr", "viridis", "plotly", "readr")
 
 install.packages(pkgs,
                  repos = "https://cloud.r-project.org",
                  type = "binary",
                  dependencies = TRUE)
-```
-
-Now, you will also need install the `smodels` package. We have written
-this package for our own courses, and you'll need to install it in a slightly
-different way.
-
-```{r, eval = FALSE}
-devtools::install_github("statsmaths/smodels")
 ```
 
 ### Defaults

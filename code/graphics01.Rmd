@@ -3,15 +3,12 @@ title: "AHA2019 -- Graphics I"
 output: html_notebook
 ---
 
-# Title: "Graphics with Baptism Records"
-# Name:
-
-# Load required functions and packages
+```{r}
 library(ggplot2)
 library(readr)
 library(dplyr)
+```
 
-theme_set(theme_minimal())
 
 The first step in this lab is to read in the Arbuthnot dataset, an
 historically important set of records from late 17th century baptism

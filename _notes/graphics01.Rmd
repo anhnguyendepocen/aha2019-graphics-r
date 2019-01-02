@@ -234,11 +234,12 @@ ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
   geom_point()
 ```
 
-Or, we could add a "best fit line" through the data using the `geom_bestfit` layer:
+Or, we could add a "best fit line" through the data using the `geom_smooth`
+layer with a particular option:
 
 ```{r}
 ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
-  geom_bestfit() +
+  geom_smooth(method = "lm") +
   geom_point()
 ```
 
@@ -258,12 +259,20 @@ ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
 
 Again, the specific syntax is something you just need to look up or memorize.
 
-We can also have the plot compute summary statistics, such as the mean, for groups in
-a dataset. Here we see the mean life expectancy for each continent:
+We can also have the show a single variable in a plot using a specific type
+of geometry. To show the distribution of a categorical variable, use
+`geom_bar` to make a bar plot:
 
 ```{r}
-ggplot(gapminder_2007, aes(continent, life_exp)) +
-  geom_mean()
+ggplot(gapminder_2007, aes(continent)) +
+  geom_bar()
+```
+
+Or, use `geom_hist` to build a histogram of a continuous variable:
+
+```{r}
+ggplot(gapminder_2007, aes(gdp_per_cap)) +
+  geom_bar()
 ```
 
 ## Data Aesthetics
@@ -337,7 +346,7 @@ ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
   geom_point(aes(color = "blue"))
 ```
 
-What's happening here?!
+**What's happening here?!**
 
 You can mix fixed and variable aesthetics in the same plot. For example, here I
 use color to represent the continent but make all the points larger.
@@ -348,29 +357,3 @@ ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
 ```
 
 Note that the `aes()` part **must** go first. Just another rule you need to remember.
-
-
-## Facets
-
-A special layer type within the **ggplot2** framework, facets allow us
-to produce many small plots for each value of a character variable. It
-can be added onto almost any other plot.
-
-```{r, message = FALSE}
-ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
-  geom_point() +
-  facet_wrap(~continent)
-```
-
-Notice that the scales of the axes are all the same. Sometimes this is
-useful, but in other cases it is useful to allow these to change. We
-can do this by adding the option `scales="free"`:
-
-```{r, message = FALSE}
-ggplot(gapminder_2007, aes(gdp_per_cap, life_exp)) +
-  geom_point() +
-  facet_wrap(~continent, scales = "free")
-```
-
-There are also options `scales="free_x"` and `scales="free_y"` if you
-would like to only allow one axis to change.
