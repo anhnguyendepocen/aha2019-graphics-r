@@ -4,18 +4,6 @@ author: "Taylor Arnold"
 output: html_notebook
 ---
 
-
-
-
-{% highlight r %}
-library(readr)
-library(ggplot2)
-library(dplyr)
-library(viridis)
-
-gapminder_2007 <- read_csv("https://statsmaths.github.io/stat_data/gapminder_2007.csv")
-{% endhighlight %}
-
 ## More Graphics Layers
 
 Last time we introduced a brief history of the theory of graphics
